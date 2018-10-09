@@ -25,15 +25,30 @@ expression :: [Token] -> (AST, [Token])
 expression ts =
   let (termNode, ts') = term ts in
   case lookup ts' of
-  TOp op | op == Plus || op == Minus ->
+  TOp op | op == Plus ->
     let (exprNode, ts'') = expression $ accept ts' in
     (ASum op termNode exprNode, ts'')
+  TOp op | op == Minus ->
+    let (treeNode, ts'') = (parseminus termNode (accept ts')) in
+    case lookup ts'' of
+    TOp op | op == Plus ->
+        let (exprNode, ts''') = expression $ accept ts'' in
+        (ASum op treeNode exprNode, ts''')
+    _ -> (treeNode, ts'')
   TAssign ->
     case termNode of
     AIdent v -> let (exprNode, ts'') = expression $ accept ts' in
-          (AAssign v exprNode, ts'')
+                    (AAssign v exprNode, ts'')
     _ -> error "Syntax error: assignment is only possible to identifiers"
   _ -> (termNode, ts')
+
+parseminus :: AST -> [Token] -> (AST, [Token])
+parseminus tree ts = 
+  let (termNode, ts') = term ts in
+  case lookup ts' of
+  TOp op | op == Minus ->
+    (parseminus (ASum op tree termNode) (accept ts')) 
+  _ -> (ASum Minus tree termNode, ts')
 
 term :: [Token] -> (AST, [Token])
 term ts =

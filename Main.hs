@@ -10,7 +10,9 @@ runParser input = do
 
 main :: IO ()
 main = do
+  runParser "1 - 2 - 3 - 4 + gfj - 345 * fd - tr^2 "
   runParser " var = -23 * 123 + 17 + -4"
+  runParser "-(i = 3)"
   runParser " -(3-4) "
   runParser " var123var = 98^Int"
   runParser "var = -two^2^21^bigInt"
