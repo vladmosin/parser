@@ -17,3 +17,5 @@ main = do
   runParser " var123var = 98^Int"
   runParser "var = -two^2^21^bigInt"
   runParser " var = first_big_var * 978 + second_var"
+  runParser " 2 * a / 4 * 12"
+  runParser "--1*1"
